@@ -1,1 +1,2 @@
 TestHelloDundeeCleftPalate.hpp
+TestSpheroidCellSorting.hpp
