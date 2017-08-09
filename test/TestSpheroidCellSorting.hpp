@@ -17,7 +17,7 @@
 #include "CellPopulationAdjacencyMatrixWriter.hpp"
 
 #include "PottsBasedCellPopulation.hpp"
-#include "PottsMeshGenerator.hpp"
+#include "PottsTwoPopulationsGenerator.hpp"
 #include "VolumeConstraintPottsUpdateRule.hpp"
 #include "SurfaceAreaConstraintPottsUpdateRule.hpp"
 #include "AdhesionPottsUpdateRule.hpp"
@@ -58,7 +58,7 @@ public:
         // Create a simple 2D PottsMesh
         unsigned element_size = 4;
         unsigned domain_size = M_NUM_CELLS_ACROSS * element_size * 3; // Three times the initial domain size
-        PottsMeshGenerator<2> generator(domain_size, M_NUM_CELLS_ACROSS, element_size, domain_size, M_NUM_CELLS_ACROSS, element_size);
+        PottsTwoPopulationsGenerator<2> generator(domain_size, M_NUM_CELLS_ACROSS, element_size, domain_size, M_NUM_CELLS_ACROSS, element_size);
         PottsMesh<2>* p_mesh = generator.GetMesh();
 
         // Create cells
