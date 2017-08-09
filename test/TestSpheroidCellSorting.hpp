@@ -27,6 +27,8 @@
 #include "CellMutationStatesWriter.hpp"
 #include "CellLabelWriter.hpp"
 
+#include "RadialCellKiller.hpp"
+
 #include "PetscSetupAndFinalize.hpp"
 
 static const double M_TIME_TO_STEADY_STATE = 10; //10
@@ -106,8 +108,19 @@ public:
         p_differential_adhesion_update_rule->SetLabelledCellBoundaryAdhesionEnergyParameter(1.0); // 2.0
         simulator.AddUpdateRule(p_differential_adhesion_update_rule);
 
+        MAKE_PTR_ARGS(RadialCellKiller<2>, p_killer, (&cell_population,0.5));
+        simulator.AddCellKiller(p_killer);
+
         // Run simulation
+        simulator.SetEndTime(0.01);
+
         simulator.Solve();
+
+        simulator.RemoveAllCellKillers();
+
+        simulator.SetEndTime(M_TIME_TO_STEADY_STATE);
+        simulator.Solve();
+
 
         // Now label some cells
         boost::shared_ptr<AbstractCellProperty> p_state(CellPropertyRegistry::Instance()->Get<CellLabel>());
