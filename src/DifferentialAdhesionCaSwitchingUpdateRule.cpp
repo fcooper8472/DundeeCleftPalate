@@ -1,40 +1,5 @@
-/*
-
-Copyright (c) 2005-2016, University of Oxford.
-All rights reserved.
-
-University of Oxford means the Chancellor, Masters and Scholars of the
-University of Oxford, having an administrative office at Wellington
-Square, Oxford OX1 2JD, UK.
-
-This file is part of Chaste.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
- * Neither the name of the University of Oxford nor the names of its
-   contributors may be used to endorse or promote products derived from this
-   software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
 
 #include "DifferentialAdhesionCaSwitchingUpdateRule.hpp"
-#include "Debug.hpp"
 
 template<unsigned DIM>
 DifferentialAdhesionCaSwitchingUpdateRule<DIM>::DifferentialAdhesionCaSwitchingUpdateRule()
@@ -54,13 +19,14 @@ DifferentialAdhesionCaSwitchingUpdateRule<DIM>::~DifferentialAdhesionCaSwitching
 }
 
 template<unsigned DIM>
-double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateHamiltonian(unsigned currentNodeIndex,
-                                                                      unsigned neighbourNodeIndex,
-                                                                      CaBasedCellPopulation<DIM>& rCellPopulation)
+double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateHamiltonian(
+    unsigned currentNodeIndex,
+    unsigned neighbourNodeIndex,
+    CaBasedCellPopulation<DIM>& rCellPopulation)
 {
     // Energy before and after switch
-    double H_0=0.0;
-    double H_1=0.0;
+    double H_0 = 0.0;
+    double H_1 = 0.0;
 
     bool is_cell_on_node_1 = rCellPopulation.IsCellAttachedToLocationIndex(currentNodeIndex);
     bool is_cell_on_node_2 = rCellPopulation.IsCellAttachedToLocationIndex(neighbourNodeIndex);
@@ -78,28 +44,19 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateHamiltonian(unsig
         is_cell_2_labelled = p_cell_2->HasCellProperty<CellLabel>();
     }
 
-
-    //PRINT_3_VARIABLES(currentNodeIndex,is_cell_on_node_1,is_cell_1_labelled)
-
     std::set<unsigned> node_1_neighbouring_node_indices = rCellPopulation.rGetMesh().GetVonNeumannNeighbouringNodeIndices(currentNodeIndex);
 
     // Remove node 2 from neighbouring indices
     node_1_neighbouring_node_indices.erase(neighbourNodeIndex);
 
     for (std::set<unsigned>::iterator iter = node_1_neighbouring_node_indices.begin();
-                 iter != node_1_neighbouring_node_indices.end();
-                 ++iter)
+         iter != node_1_neighbouring_node_indices.end();
+         ++iter)
     {
-        //PRINT_2_VARIABLES(H_0,H_1);
-        //PRINT_VARIABLE(*iter);
-
-        if(rCellPopulation.IsCellAttachedToLocationIndex(*iter))
+        if (rCellPopulation.IsCellAttachedToLocationIndex(*iter))
         {
-            // Cell attached to neighbour node
-
-
+            // Cell is attached to neighbour node
             bool is_neighbour_labelled = rCellPopulation.GetCellUsingLocationIndex(*iter)->template HasCellProperty<CellLabel>();
-            //PRINT_VARIABLE(is_neighbour_labelled)
 
             if (is_neighbour_labelled)
             {
@@ -135,7 +92,7 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateHamiltonian(unsig
                     H_1 += mLabelledCellBoundaryAdhesionEnergyParameter;
                 }
             }
-            else // Neighbour not labeled
+            else // Neighbour not labelled
             {
                 if (is_cell_on_node_1)
                 {
@@ -195,34 +152,22 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateHamiltonian(unsig
                 }
             }
             //else // no cell on node 2 or neighbour so no contribution
-
         }
     }
 
-    //PRINT_2_VARIABLES(H_0,H_1);
-
     std::set<unsigned> node_2_neighbouring_node_indices = rCellPopulation.rGetMesh().GetVonNeumannNeighbouringNodeIndices(neighbourNodeIndex);
+
     // Remove node 2 from neighbouring indices
     node_2_neighbouring_node_indices.erase(currentNodeIndex);
 
-
-    //PRINT_3_VARIABLES(neighbourNodeIndex,is_cell_on_node_2,is_cell_2_labelled)
-
     for (std::set<unsigned>::iterator iter = node_2_neighbouring_node_indices.begin();
-                 iter != node_2_neighbouring_node_indices.end();
-                 ++iter)
+         iter != node_2_neighbouring_node_indices.end();
+         ++iter)
     {
-        //PRINT_2_VARIABLES(H_0,H_1);
-        //PRINT_VARIABLE(*iter);
-
-
-        if(rCellPopulation.IsCellAttachedToLocationIndex(*iter))
+        if (rCellPopulation.IsCellAttachedToLocationIndex(*iter))
         {
-            // Cell attached to neighbour node
-
+            // Cell is attached to neighbour node
             bool is_neighbour_labelled = rCellPopulation.GetCellUsingLocationIndex(*iter)->template HasCellProperty<CellLabel>();
-
-            //PRINT_VARIABLE(is_neighbour_labelled)
 
             if (is_neighbour_labelled)
             {
@@ -257,7 +202,7 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateHamiltonian(unsig
                     H_0 += mLabelledCellBoundaryAdhesionEnergyParameter;
                 }
             }
-            else // Neighbour not labeled
+            else // Neighbour not labelled
             {
                 if (is_cell_on_node_1)
                 {
@@ -319,26 +264,25 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateHamiltonian(unsig
             // else // no cell on node 1 or neighbour so no contribution
         }
     }
-    //PRINT_2_VARIABLES(H_0,H_1);
 
     return H_1-H_0;
 }
 
 template<unsigned DIM>
-double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateSwitchingProbability(unsigned currentNodeIndex,
-                                                                      unsigned neighbourNodeIndex,
-                                                                      CaBasedCellPopulation<DIM>& rCellPopulation,
-                                                                      double dt,
-                                                                      double deltaX)
+double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateSwitchingProbability(
+    unsigned currentNodeIndex,
+    unsigned neighbourNodeIndex,
+    CaBasedCellPopulation<DIM>& rCellPopulation,
+    double dt,
+    double deltaX)
 {
-
-    // Check if cell will have a moore neighbour after the move?
+    // Check if cell will have a Moore neighbour after the move?
     bool cells_connected = false;
 
     bool is_cell_on_node_1 = rCellPopulation.IsCellAttachedToLocationIndex(currentNodeIndex);
     bool is_cell_on_node_2 = rCellPopulation.IsCellAttachedToLocationIndex(neighbourNodeIndex);
 
-    // To get here need al teast one cell
+    // To get here need at least one cell
     assert(is_cell_on_node_1 || is_cell_on_node_2);
 
     if ( !is_cell_on_node_1 || !is_cell_on_node_2 )
@@ -348,14 +292,15 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateSwitchingProbabil
             assert(!is_cell_on_node_2);
 
             std::set<unsigned> node_2_neighbouring_node_indices = rCellPopulation.rGetMesh().GetMooreNeighbouringNodeIndices(neighbourNodeIndex);
+
             // Remove node 1 from neighbouring indices
             node_2_neighbouring_node_indices.erase(currentNodeIndex);
 
             for (std::set<unsigned>::iterator iter = node_2_neighbouring_node_indices.begin();
-                             iter != node_2_neighbouring_node_indices.end();
-                             ++iter)
+                 iter != node_2_neighbouring_node_indices.end();
+                 ++iter)
             {
-                if(rCellPopulation.IsCellAttachedToLocationIndex(*iter))
+                if (rCellPopulation.IsCellAttachedToLocationIndex(*iter))
                 {
                     cells_connected = true;
                 }
@@ -367,6 +312,7 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateSwitchingProbabil
             assert(!is_cell_on_node_1);
 
             std::set<unsigned> node_1_neighbouring_node_indices = rCellPopulation.rGetMesh().GetMooreNeighbouringNodeIndices(currentNodeIndex);
+
             // Remove node 1 from neighbouring indices
             node_1_neighbouring_node_indices.erase(neighbourNodeIndex);
 
@@ -374,13 +320,12 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateSwitchingProbabil
                             iter != node_1_neighbouring_node_indices.end();
                             ++iter)
             {
-                if(rCellPopulation.IsCellAttachedToLocationIndex(*iter))
+                if (rCellPopulation.IsCellAttachedToLocationIndex(*iter))
                 {
                     cells_connected = true;
                 }
             }
         }
-
     }
     else
     {
@@ -388,14 +333,12 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateSwitchingProbabil
         cells_connected = true;
     }
 
-
     double probability_of_switch = 0.0;
-
-    if(cells_connected)
+    if (cells_connected)
     {
         double hamiltonian_difference = EvaluateHamiltonian(currentNodeIndex,neighbourNodeIndex,rCellPopulation);
 
-        if (hamiltonian_difference<=0)
+        if (hamiltonian_difference <= 0)
         {
             probability_of_switch =  dt;
         }
@@ -406,8 +349,6 @@ double DifferentialAdhesionCaSwitchingUpdateRule<DIM>::EvaluateSwitchingProbabil
     }
 
    return probability_of_switch;
-
-
 }
 
 template<unsigned DIM>

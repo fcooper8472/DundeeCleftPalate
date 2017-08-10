@@ -64,10 +64,7 @@ void RandomMotionForce<DIM>::OutputForceParameters(out_stream& rParamsFile)
     AbstractForce<DIM>::OutputForceParameters(rParamsFile);
 }
 
-/////////////////////////////////////////////////////////////////////////////
 // Explicit instantiation
-/////////////////////////////////////////////////////////////////////////////
-
 template class RandomMotionForce<1>;
 template class RandomMotionForce<2>;
 template class RandomMotionForce<3>;

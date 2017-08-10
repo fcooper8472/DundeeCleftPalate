@@ -17,7 +17,7 @@ class RandomMotionForce : public AbstractForce<DIM>
 private :
 
     /**
-     * Random Movement Parameter.
+     * Random movement parameter.
      */
     double mMovementParameter;
 
